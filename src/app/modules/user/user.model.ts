@@ -1,43 +1,64 @@
-import { model, Schema } from "mongoose";
-import { IAuthProvider, IsActive, IUser, Role } from "./user.interface";
+import { Schema, model } from "mongoose";
+import { IAuthProvider, IUser, Role } from "./user.interface";
 
 const authProviderSchema = new Schema<IAuthProvider>(
   {
-    provider: { type: String, required: true },
+    provider: { type: String, enum: ["google", "credentials"], required: true },
     providerId: { type: String, required: true },
   },
+  { _id: false, versionKey: false }
+);
+
+const vehicleInfoSchema = new Schema(
   {
-    versionKey: false,
-    _id: false,
-  }
+    model: { type: String, required: true },
+    plateNumber: { type: String, required: true },
+    color: { type: String, required: true },
+  },
+  { _id: false, versionKey: false }
+);
+
+const locationSchema = new Schema(
+  {
+    type: { type: String, enum: ["Point"], default: "Point" },
+    coordinates: { type: [Number], required: true },
+  },
+  { _id: false, versionKey: false }
 );
 
 const userSchema = new Schema<IUser>(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true, index: true },
+    phone: { type: String },
     password: { type: String },
+    picture: { type: String },
     role: {
       type: String,
       enum: Object.values(Role),
-      default: Role.USER,
+      required: true,
+      default: Role.RIDER,
     },
-    phone: { type: String },
-    picture: { type: String },
-    address: { type: String },
-    isDeleted: { type: Boolean, default: false },
+    isBlocked: { type: Boolean, default: false },
     isActive: {
-      type: String,
-      enum: Object.values(IsActive),
-      default: IsActive.ACTIVE,
+      type: Boolean,
+      default: true,
     },
-    isVerified: { type: Boolean, default: false },
-    auths: [authProviderSchema],
+    auths: { type: [authProviderSchema] },
+    currentLocation: { type: locationSchema },
+    isApproved: { type: Boolean, default: false },
+    vehicleInfo: { type: vehicleInfoSchema },
+    totalEarnings: { type: Number, default: 0 },
+    rides: [{ type: Schema.Types.ObjectId, ref: "Ride" }],
+    averageRating: { type: Number, default: 0 },
+    totalRatings: { type: Number, default: 0 },
+    address: { type: String },
   },
   {
     timestamps: true,
     versionKey: false,
   }
 );
+userSchema.index({ "currentLocation.coordinates": "2dsphere" });
 
 export const User = model<IUser>("User", userSchema);

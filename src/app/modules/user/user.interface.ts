@@ -3,40 +3,41 @@ import { Types } from "mongoose";
 export enum Role {
   SUPER_ADMIN = "SUPER_ADMIN",
   ADMIN = "ADMIN",
-  USER = "USER",
-  GUIDE = "GUIDE",
+  RIDER = "RIDER",
+  DRIVER = "DRIVER",
 }
 
-//auth providers
-/**
- * email, password
- * google authentication
- */
-
 export interface IAuthProvider {
-  provider: "google" | "credentials"; // "Google", "Credential"
+  provider: "google" | "credentials";
   providerId: string;
 }
 
-export enum IsActive {
-  ACTIVE = "ACTIVE",
-  INACTIVE = "INACTIVE",
-  BLOCKED = "BLOCKED",
+export interface IVehicleInfo {
+  model: string;
+  plateNumber: string;
+  color: string;
 }
 
 export interface IUser {
   _id?: Types.ObjectId;
   name: string;
   email: string;
-  password?: string;
   phone?: string;
-  picture?: string;
-  address?: string;
-  isDeleted?: string;
-  isActive?: string;
-  isVerified?: boolean;
+  password?: string;
   role: Role;
+  picture?: string;
+  isBlocked?: boolean;
+  isActive?: boolean;
   auths: IAuthProvider[];
-  bookings?: Types.ObjectId[];
-  guides?: Types.ObjectId[];
+  isApproved?: boolean;
+  vehicleInfo?: IVehicleInfo;
+  totalEarnings?: number;
+  currentLocation?: {
+    type: "Point";
+    coordinates: [number, number];
+  };
+  rides?: Types.ObjectId[];
+  averageRating?: number;
+  totalRatings?: number;
+  address?: string;
 }
