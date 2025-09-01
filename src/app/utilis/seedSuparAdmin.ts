@@ -1,22 +1,19 @@
-import bcryptjs from "bcryptjs";
 import { envVars } from "../config/env";
 import { IAuthProvider, IUser, Role } from "../modules/user/user.interface";
+import bcryptjs from "bcryptjs";
 import { User } from "../modules/user/user.model";
 
-export const seedSuperAdmin = async () => {
+const seedSuparAdmin = async () => {
   try {
-    const isSuperAdminExist = await User.findOne({
+    const isSuparAdmin = await User.findOne({
       email: envVars.SUPER_ADMIN_EMAIL,
     });
 
-    if (isSuperAdminExist) {
-      console.log("Super Admin Already Exists!");
+    if (isSuparAdmin) {
+      console.log("already supar admin added");
       return;
     }
-
-    console.log("Trying to create Super Admin...");
-
-    const hashedPassword = await bcryptjs.hash(
+    const hasedPassword = await bcryptjs.hash(
       envVars.SUPER_ADMIN_PASSWORD,
       Number(envVars.BCRYPT_SALT_ROUND)
     );
@@ -27,18 +24,23 @@ export const seedSuperAdmin = async () => {
     };
 
     const payload: IUser = {
-      name: "Super admin",
+      name: "Supar Admin",
       role: Role.SUPER_ADMIN,
       email: envVars.SUPER_ADMIN_EMAIL,
-      password: hashedPassword,
-      isVerified: true,
+      password: hasedPassword,
+      isApproved: true,
       auths: [authProvider],
+      currentLocation: {
+        type: "Point",
+        coordinates: [90.3675, 23.7465],
+      },
     };
 
-    const superadmin = await User.create(payload);
-    console.log("Super Admin Created Successfuly! \n");
-    console.log(superadmin);
+    await User.create(payload);
+    console.log("user from suparadmin");
   } catch (error) {
     console.log(error);
   }
 };
+
+export default seedSuparAdmin;

@@ -3,13 +3,13 @@ import { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app";
 import { envVars } from "./app/config/env";
-import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
+import seedSuparAdmin from "./app/utilis/seedSuparAdmin";
 
 let server: Server;
 
 const startServer = async () => {
   try {
-    await mongoose.connect(envVars.DB_URL);
+    await mongoose.connect(envVars.MONGODB_URI);
 
     console.log("Connected to bd");
 
@@ -23,7 +23,7 @@ const startServer = async () => {
 
 (async () => {
   await startServer();
-  await seedSuperAdmin();
+  await seedSuparAdmin();
 })();
 
 process.on("SIGTERM", () => {

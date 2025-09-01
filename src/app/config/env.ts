@@ -2,10 +2,10 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-interface EnvConfig {
+interface EnvVars {
   PORT: string;
-  DB_URL: string;
-  NODE_ENV: "development" | "production";
+  MONGODB_URI: string;
+  NODE_ENV: string;
   BCRYPT_SALT_ROUND: string;
   JWT_ACCESS_EXPIRES: string;
   JWT_ACCESS_SECRET: string;
@@ -18,12 +18,16 @@ interface EnvConfig {
   GOOGLE_CALLBACK_URL: string;
   EXPRESS_SESSION_SECRET: string;
   FRONTEND_URL: string;
+  REDIS_HOST: string;
+  REDIS_PORT: string;
+  REDIS_USERNAME: string;
+  REDIS_PASSWORD: string;
 }
 
-const loadEnvVariables = (): EnvConfig => {
-  const requiredEnvVariables: string[] = [
+const loadEnvVars = () => {
+  const requiredEnvVars: string[] = [
     "PORT",
-    "DB_URL",
+    "MONGODB_URI",
     "NODE_ENV",
     "BCRYPT_SALT_ROUND",
     "JWT_ACCESS_EXPIRES",
@@ -37,18 +41,22 @@ const loadEnvVariables = (): EnvConfig => {
     "GOOGLE_CALLBACK_URL",
     "EXPRESS_SESSION_SECRET",
     "FRONTEND_URL",
+    "REDIS_HOST",
+    "REDIS_PORT",
+    "REDIS_USERNAME",
+    "REDIS_PASSWORD",
   ];
 
-  requiredEnvVariables.forEach((key) => {
-    if (!process.env[key]) {
-      throw new Error(`Missing require environment variabl ${key}`);
+  requiredEnvVars.forEach((envVar) => {
+    if (!process.env[envVar]) {
+      throw new Error(`Environment variable ${envVar} is not set`);
     }
   });
 
   return {
     PORT: process.env.PORT as string,
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    DB_URL: process.env.DB_URL!,
+    MONGODB_URI: process.env.MONGODB_URI!,
     NODE_ENV: process.env.NODE_ENV as "development" | "production",
     BCRYPT_SALT_ROUND: process.env.BCRYPT_SALT_ROUND as string,
     JWT_ACCESS_EXPIRES: process.env.JWT_ACCESS_EXPIRES as string,
@@ -62,7 +70,11 @@ const loadEnvVariables = (): EnvConfig => {
     GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL as string,
     EXPRESS_SESSION_SECRET: process.env.EXPRESS_SESSION_SECRET as string,
     FRONTEND_URL: process.env.FRONTEND_URL as string,
+    REDIS_HOST: process.env.REDIS_HOST!,
+    REDIS_PORT: process.env.REDIS_PORT!,
+    REDIS_USERNAME: process.env.REDIS_USERNAME!,
+    REDIS_PASSWORD: process.env.REDIS_PASSWORD!,
   };
 };
 
-export const envVars = loadEnvVariables();
+export const envVars = loadEnvVars() as EnvVars;

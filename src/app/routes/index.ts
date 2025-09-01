@@ -1,8 +1,11 @@
 import { Router } from "express";
-import { AuthRoutes } from "../modules/auth/auth.route";
 import { UserRoutes } from "../modules/user/user.route";
+import { AuthRoutes } from "../modules/auth/auth.route";
+import { RideRoutes } from "../modules/ride/ride.route";
+// import { StatsRoutes } from "../modules/stats/";
+// import { SOSRoutes } from "../modules/SOS/sos.route";
 
-export const router = Router();
+const router = Router();
 
 const moduleRoutes = [
   {
@@ -13,14 +16,20 @@ const moduleRoutes = [
     path: "/auth",
     route: AuthRoutes,
   },
+  {
+    path: "/ride",
+    route: RideRoutes,
+  },
+  // {
+  //   path: "/stats",
+  //   route: StatsRoutes,
+  // },
+  // {
+  //   path: "/sos",
+  //   route: SOSRoutes,
+  // },
 ];
-
 moduleRoutes.forEach((route) => {
   router.use(route.path, route.route);
 });
-
-// router.use("/user", UserRoutes)
-// router.use("/tour", TourRoutes)
-// router.use("/division", DivisionRoutes)
-// router.use("/booking", BookingRoutes)
-// router.use("/user", UserRoutes)
+export default router;
