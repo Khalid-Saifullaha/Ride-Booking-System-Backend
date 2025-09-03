@@ -1,4 +1,4 @@
-import { ZodObject, ZodRawShape, z } from "zod";
+import { ZodObject, ZodRawShape } from "zod";
 import { NextFunction, Request, Response } from "express";
 
 type AnyZodObject = ZodObject<ZodRawShape>;
