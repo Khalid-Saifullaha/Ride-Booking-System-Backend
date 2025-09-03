@@ -28,8 +28,12 @@ export const checkAuth =
       // if (isUserExist.isActive === false) {
       //     throw new AppError(httpStatus.BAD_REQUEST, `User is ${isUserExist.isActive}`)
       // }
-      if (!authRoles.includes(verifyToken.role)) {
-        console.log(authRoles.includes(verifyToken.role));
+      if (
+        authRoles.length &&
+        !authRoles
+          .map((r) => r.toLowerCase())
+          .includes(verifyToken.role.toLowerCase())
+      ) {
         throw new AppError(
           httpStatus.BAD_REQUEST,
           "You are not promoted in this user"
