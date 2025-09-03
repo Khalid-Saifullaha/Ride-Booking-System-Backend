@@ -26,7 +26,7 @@ passport.use(
           return done("User does not exist");
         }
 
-        let user = await User.findOne({ email });
+        const user = await User.findOne({ email });
         if (user && !user.isApproved) {
           return done(null, false, { message: "User is not verified" });
         }
@@ -125,7 +125,7 @@ passport.deserializeUser(async (id: string, done: any) => {
     const user = await User.findById(id);
     done(null, user);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     done(error);
   }
 });
